@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Pro</title>
+
+    <style>
+        body {
+           98-766margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: white;
+        }
+
+        header {
+            background: #1e293b;
+            padding: 15px;
+            font-size: 22px;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #1e293b;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #3b82f6;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        h2 {
+            margin-top: 25px;
+            font-size: 18px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #0f172a;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+
+        li:hover {
+            transform: scale(1.02);
+        }
+
+        .delete {
+            background: #ef4444;
+        }
+
+        .delete:hover {
+            background: #dc2626;
+        }
+
+        .empty {
+            opacity: 0.6;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>📚 Library Management System</header>
+
+<div class="container">
+
+    <div class="input-area">
+        <input id="bookInput" placeholder="Enter book name">
+        <button onclick="addBook()">Add</button>
+    </div>
+
+    <h2>Books List</h2>
+    <ul id="bookList"></ul>
+    <div id="emptyMsg" class="empty">No books added yet</div>
+
+</div>
+
+<script>
+
+    let books = [];
+
+    function addBook() {
+        const input = document.getElementById("bookInput");
+        const book = input.value.trim();
+
+        if(book === "") return;
+
+        books.push(book);
+        input.value = "";
+        displayBooks();
+    }
+
+    function displayBooks() {
+        const list = document.getElementById("bookList");
+        const emptyMsg = document.getElementById("emptyMsg");
+
+        list.innerHTML = "";
+
+        if(books.length === 0){
+            emptyMsg.style.display = "block";
+            return;
+        } else {
+            emptyMsg.style.display = "none";
+        }
+
+        books.forEach((b, index) => {
+            const li = document.createElement("li");
+
+            li.innerHTML = `
+                ${b}
+                <button class="delete" onclick="deleteBook(${index})">Delete</button>
+            `;
+
+            list.appendChild(li);
+        });
+    }
+
+    function deleteBook(index) {
+        books.splice(index, 1);
+        displayBooks();
+    }
+
+</script>
+
+</body>
+</html>
