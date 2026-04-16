@@ -117,50 +117,66 @@
 
 <script>
 
-    let books = [];
+    const API = "http://localhost:8080/books";
 
     function addBook() {
         const input = document.getElementById("bookInput");
-        const book = input.value.trim();
+        const name = input.value.trim();
 
-        if(book === "") return;
+        if (name === "") return;
 
-        books.push(book);
-        input.value = "";
-        displayBooks();
-    }
-
-    function displayBooks() {
-        const list = document.getElementById("bookList");
-        const emptyMsg = document.getElementById("emptyMsg");
-
-        list.innerHTML = "";
-
-        if(books.length === 0){
-            emptyMsg.style.display = "block";
-            return;
-        } else {
-            emptyMsg.style.display = "none";
-        }
-
-        books.forEach((b, index) => {
-            const li = document.createElement("li");
-
-            li.innerHTML = `
-                ${b}
-                <button class="delete" onclick="deleteBook(${index})">Delete</button>
-            `;
-
-            list.appendChild(li);
+        fetch(API, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name: name })
+        })
+        .then(() => {
+            input.value = "";
+            loadBooks();
         });
     }
 
-    function deleteBook(index) {
-        books.splice(index, 1);
-        displayBooks();
+    function loadBooks() {
+        fetch(API)
+        .then(res => res.json())
+        .then(data => {
+            const list = document.getElementById("bookList");
+            const emptyMsg = document.getElementById("emptyMsg");
+
+            list.innerHTML = "";
+
+            if (data.length === 0) {
+                emptyMsg.style.display = "block";
+            } else {
+                emptyMsg.style.display = "none";
+            }
+
+            data.forEach(book => {
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                    ${book.name}
+                    <button class="delete" onclick="deleteBook(${book.id})">Delete</button>
+                `;
+
+                list.appendChild(li);
+            });
+        });
     }
+
+    function deleteBook(id) {
+        fetch(`${API}/${id}`, {
+            method: "DELETE"
+        }).then(() => loadBooks());
+    }
+
+    window.onload = loadBooks;
 
 </script>
 
 </body>
 </html>
+
+
